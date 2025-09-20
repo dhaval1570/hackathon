@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topic Information</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #2a5298, #1e3c72);
+      margin: 0;
+      padding: 30px;
+      color: #fff;
+    }
+    .card {
+      max-width: 700px;
+      margin: auto;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      animation: fadeIn 0.5s ease;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 26px;
+      color: #ffe082;
+    }
+    .card h3 {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #a5f3fc;
+    }
+    .card p {
+      line-height: 1.6;
+    }
+    button {
+      margin-top: 20px;
+      background: linear-gradient(135deg, #ff6b6b, #f06595);
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: transform 0.3s, background 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #f06595, #cc5de8);
+      transform: scale(1.05);
+    }
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2 id="topicTitle"></h2>
+    <h3>Basic Information</h3>
+    <p id="basicInfo"></p>
+    <h3>Solutions</h3>
+    <p id="solutions"></p>
+    <button onclick="goBack()">⬅️ Back</button>
+  </div>
+
+  <script>
+    const content = {
+      anxiety: {
+        title: "Anxiety",
+        info: "Anxiety is a common mental health condition that causes excessive worry, fear, or nervousness. It can affect daily life and physical health.",
+        solutions: "Practice relaxation techniques, mindfulness, regular exercise, and seek counseling if persistent."
+      },
+      depression: {
+        title: "Depression",
+        info: "Depression is a mood disorder that causes persistent sadness and loss of interest. It impacts thinking, behavior, and physical well-being.",
+        solutions: "Maintain social connections, engage in physical activity, follow a routine, and consult a therapist if symptoms continue."
+      },
+      stress: {
+        title: "Stress",
+        info: "Stress is the body's response to pressure. Short-term stress can be positive, but chronic stress harms mental and physical health.",
+        solutions: "Time management, breathing exercises, healthy lifestyle, and setting realistic goals can reduce stress."
+      },
+      sleep: {
+        title: "Sleep",
+        info: "Sleep problems include difficulty falling asleep, staying asleep, or poor sleep quality, which affects mood and concentration.",
+        solutions: "Maintain a sleep schedule, limit caffeine, reduce screen time before bed, and create a calming bedtime routine."
+      },
+      bipolar: {
+        title: "Bipolar Disorder",
+        info: "Bipolar disorder is characterized by extreme mood swings including emotional highs (mania) and lows (depression).",
+        solutions: "Medication, therapy, consistent daily routines, and support groups are effective management strategies."
+      },
+      addiction: {
+        title: "Addiction",
+        info: "Addiction is a chronic condition involving compulsive substance use or behavior despite harmful consequences.",
+        solutions: "Counseling, support groups, lifestyle changes, and medical treatment are key to recovery."
+      }
+    };
+
+    // Get topic from URL
+    const params = new URLSearchParams(window.location.search);
+    const topic = params.get("topic");
+
+    if (topic && content[topic]) {
+      document.getElementById("topicTitle").textContent = content[topic].title;
+      document.getElementById("basicInfo").textContent = content[topic].info;
+      document.getElementById("solutions").textContent = content[topic].solutions;
+    } else {
+      document.querySelector(".card").innerHTML = "<h2>Topic Not Found</h2><button onclick='goBack()'>⬅️ Back</button>";
+    }
+
+    function goBack() {
+      window.location.href = "home.html";
+    }
+  </script>
+</body>
+</html>

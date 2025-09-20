@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mindful Runner — Wellness Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --bg1: linear-gradient(135deg, #7b61ff 0%, #36d1dc 100%);
+            --panel: rgba(255, 255, 255, 0.08);
+            --accent: #fff7c0;
+            --good: #6ee7b7;
+            --bad: #ff7a88;
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+            background: var(--bg1);
+            color: #042028;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .wrap {
+            width: 100%;
+            max-width: 980px;
+            padding: 18px
+        }
+        
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 10px 30px rgba(2, 6, 23, 0.35);
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px
+        }
+        
+        h1 {
+            font-size: 18px;
+            margin: 0;
+            color: white
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+        
+        .btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            cursor: pointer;
+            font-weight: 700
+        }
+        
+        .hud {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: white;
+            margin-bottom: 8px
+        }
+        
+        .stat {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-weight: 700
+        }
+        
+        canvas {
+            display: block;
+            width: 100%;
+            height: 360px;
+            background: linear-gradient(180deg, #bfe9ff00, rgba(0, 0, 0, 0.04));
+            border-radius: 10px
+        }
+        
+        .meters {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            align-items: center
+        }
+        
+        .meter {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            height: 12px
+        }
+        
+        .meter>i {
+            display: block;
+            height: 100%;
+            width: 50%;
+            background: linear-gradient(90deg, #6ee7b7, #2bd4a2)
+        }
+        
+        .meter.bad {
+            background: rgba(255, 255, 255, 0.04)
+        }
+        
+        .small {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9)
+        }
+        
+        .center {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px
+        }
+        
+        .overlay {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none
+        }
+        
+        .message {
+            pointer-events: auto;
+            background: linear-gradient(90deg, #fff7c0, #ffd27a);
+            color: #042028;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-weight: 800;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28)
+        }
+        /* confetti */
+        
+        .confetti {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden
+        }
+        
+        .confetti .p {
+            position: absolute;
+            font-size: 20px;
+            transform: translateY(-20vh);
+            animation: fall 3s linear forwards
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(120vh) rotate(360deg);
+                opacity: 1
+            }
+        }
+        
+        @media (max-width:720px) {
+            canvas {
+                height: 300px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="card" id="card">
+            <header>
+                <h1>Mindful Runner 🏃‍♂️💨 — Collect healthy habits, avoid stress</h1>
+                <div class="controls">
+                    <button class="btn" id="startBtn">Start</button>
+                    <button class="btn" id="pauseBtn">Pause</button>
+                    <button class="btn" id="resetBtn">Reset</button>
+                </div>
+            </header>
+
+            <div class="hud">
+                <div class="stat">Score: <span id="score">0</span></div>
+                <div class="stat">Distance: <span id="distance">0</span>m</div>
+                <div class="stat">Best: <span id="best">0</span></div>
+            </div>
+
+            <div style="position:relative">
+                <canvas id="gameCanvas" width="900" height="360" aria-label="Mindful Runner game"></canvas>
+                <div class="overlay" id="overlay" style="pointer-events:none"></div>
+            </div>
+
+            <div class="meters">
+                <div style="flex:1">
+                    <div class="small">Stress</div>
+                    <div class="meter bad"><i id="stressMeter" style="background:linear-gradient(90deg,#ff7a88,#ffb86b);width:20%"></i></div>
+                </div>
+                <div style="width:160px">
+                    <div class="small">Energy</div>
+                    <div class="meter"><i id="energyMeter" style="width:90%"></i></div>
+                </div>
+            </div>
+
+            <div class="center">
+                <div class="small">Jump: Space / Tap / Click</div>
+                <div class="small">Collectables give points & reduce stress</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        /* Mindful Runner — side-scrolling runner
+         - player jumps
+         - obstacles increase stress
+         - collectibles reduce stress and give points
+         - saves best score
+        */
+
+        // Canvas setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let W = canvas.width,
+            H = canvas.height;
+
+        // Game state
+        let running = false;
+        let paused = false;
+        let lastTime = 0;
+        let spawnTimer = 0;
+        let distance = 0;
+        let speed = 240; // px per second base scroll speed
+        let score = 0;
+        let best = parseInt(localStorage.getItem('mindful_best') || '0', 10);
+        document.getElementById('best').textContent = best;
+
+        let stress = 18; // 0 - 100 (lower is better)
+        let energy = 90; // 0 - 100
+
+        // Player
+        const player = {
+            x: 100,
+            y: H - 64,
+            w: 48,
+            h: 56,
+            vy: 0,
+            onGround: true,
+            color: '#fff7c0'
+        };
+
+        // Objects arrays
+        let obstacles = [];
+        let collectibles = [];
+
+        // difficulty ramp
+        let difficulty = 1;
+
+        // DOM refs
+        const scoreEl = document.getElementById('score');
+        const distEl = document.getElementById('distance');
+        const stressEl = document.getElementById('stressMeter');
+        const energyEl = document.getElementById('energyMeter');
+        const overlay = document.getElementById('overlay');
+        const confetti = document.getElementById('confetti');
+
+        // helper
+        function rand(min, max) {
+            return Math.random() * (max - min) + min
+        }
+
+        // reset game
+        function resetGame(full = false) {
+            obstacles = [];
+            collectibles = [];
+            distance = 0;
+            score = 0;
+            speed = 240;
+            stress = 18;
+            energy = 90;
+            difficulty = 1;
+            player.y = H - 64;
+            player.vy = 0;
+            player.onGround = true;
+            updateHUD();
+            if (full) {
+                localStorage.removeItem('mindful_best');
+                best = 0;
+                document.getElementById('best').textContent = best;
+                showMessage('Progress reset');
+            }
+        }
+
+        // start
+        function startGame() {
+            if (running) return;
+            running = true;
+            paused = false;
+            lastTime = performance.now();
+            spawnTimer = 0;
+            requestAnimationFrame(loop);
+            showMessage('Go! Keep collecting healthy habits ✨', 1200);
+        }
+
+        // pause
+        function togglePause() {
+            if (!running) return;
+            paused = !paused;
+            if (!paused) {
+                lastTime = performance.now();
+                requestAnimationFrame(loop);
+            } else {
+                showMessage('Paused', 800);
+            }
+        }
+
+        // input: jump
+        function jump() {
+            if (!running || paused) return;
+            if (player.onGround && energy > 6) {
+                player.vy = -420;
+                player.onGround = false;
+                energy = Math.max(0, energy - 6);
+                updateHUD();
+            }
+        }
+
+        // update HUD
+        function updateHUD() {
+            scoreEl.textContent = score;
+            distEl.textContent = Math.floor(distance);
+            stressEl.style.width = Math.min(100, Math.max(0, stress)) + '%';
+            energyEl.style.width = Math.min(100, Math.max(0, energy)) + '%';
+        }
+
+        // spawn obstacle
+        function spawnObstacle() {
+            const h = rand(30, 60);
+            const y = H - h - 8;
+            obstacles.push({
+                x: W + rand(0, 120),
+                y,
+                w: rand(28, 56),
+                h,
+                speed: speed + rand(0, 60) * difficulty
+            });
+        }
+
+        // spawn collectible
+        function spawnCollectible() {
+            const types = [{
+                type: 'Water',
+                emoji: '💧',
+                points: 8,
+                stress: -8,
+                energy: 6
+            }, {
+                type: 'Nap',
+                emoji: '😴',
+                points: 18,
+                stress: -18,
+                energy: 22
+            }, {
+                type: 'Break',
+                emoji: '☕',
+                points: 10,
+                stress: -10,
+                energy: 10
+            }, {
+                type: 'Breath',
+                emoji: '🌬️',
+                points: 12,
+                stress: -14,
+                energy: 8
+            }, {
+                type: 'Friend',
+                emoji: '🧑‍🤝‍🧑',
+                points: 14,
+                stress: -16,
+                energy: 6
+            }];
+            const pick = types[Math.floor(rand(0, types.length))];
+            collectibles.push({
+                x: W + rand(0, 80),
+                y: H - rand(120, 180),
+                size: 34,
+                type: pick,
+                speed: speed * 0.9
+            });
+        }
+
+        // collision helper
+        function collide(a, b) {
+            return !(a.x + a.w < b.x || a.x > b.x + b.w || a.y + a.h < b.y || a.y > b.y + b.h);
+        }
+
+        // main loop
+        function loop(t) {
+            if (!running) return;
+            if (paused) return;
+            const dt = Math.min(40, t - lastTime) / 1000;
+            lastTime = t;
+
+            // update distances & difficulty
+            distance += speed * dt / 10;
+            difficulty = 1 + distance / 600; // slowly increase
+            spawnTimer += dt;
+
+            // gravity
+            player.vy += 1200 * dt;
+            player.y += player.vy * dt;
+            if (player.y >= H - 64) {
+                player.y = H - 64;
+                player.vy = 0;
+                player.onGround = true;
+            }
+
+            // spawn logic
+            if (spawnTimer > Math.max(0.6, 1.6 - difficulty * 0.05)) {
+                // spawn obstacle or collectible
+                if (Math.random() < Math.min(0.6, 0.25 + difficulty * 0.03)) {
+                    spawnObstacle();
+                } else {
+                    spawnCollectible();
+                }
+                spawnTimer = 0;
+            }
+
+            // update obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const ob = obstacles[i];
+                ob.x -= (speed + ob.speed * 0.05) * dt;
+                if (ob.x + ob.w < -60) obstacles.splice(i, 1);
+            }
+            // update collectibles
+            for (let i = collectibles.length - 1; i >= 0; i--) {
+                const c = collectibles[i];
+                c.x -= c.speed * dt;
+                if (c.x + c.size < -40) collectibles.splice(i, 1);
+            }
+
+            // collision checks
+            const pbox = {
+                x: player.x,
+                y: player.y,
+                w: player.w,
+                h: player.h
+            };
+            // obstacles
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                const ob = obstacles[i];
+                const obBox = {
+                    x: ob.x,
+                    y: ob.y,
+                    w: ob.w,
+                    h: ob.h
+                };
+                if (collide(pbox, obBox)) {
+                    // hit obstacle: increase stress, knockback penalty
+                    stress = Math.min(100, stress + Math.floor(8 + difficulty * 4));
+                    energy = Math.max(0, energy - 10);
+                    score = Math.max(0, score - 6);
+                    obstacles.splice(i, 1);
+                    showMessage('⚠️ Hit a stressor! Try a breathing mini-break', 1200);
+                    // small invincibility frames: skip immediate collisions
+                    break;
+                }
+            }
+            // collectibles
+            for (let i = collectibles.length - 1; i >= 0; i--) {
+                const c = collectibles[i];
+                const cBox = {
+                    x: c.x,
+                    y: c.y,
+                    w: c.size,
+                    h: c.size
+                };
+                if (collide(pbox, cBox)) {
+                    // collect
+                    score += c.type.points;
+                    stress = Math.max(0, stress + c.type.stress); // stress is negative number in config
+                    energy = Math.min(100, energy + c.type.energy);
+                    showMessage(`${c.type.emoji} ${c.type.type} +${c.type.points} pts`, 1000);
+                    // teach short tip overlay
+                    showTip(`${c.type.type}: ${getTip(c.type.type)}`, 1600);
+                    collectibles.splice(i, 1);
+                    // milestone checks
+                    if (score > best) {
+                        best = score;
+                        localStorage.setItem('mindful_best', best);
+                        document.getElementById('best').textContent = best;
+                    }
+                    if (score >= 150) awardBadge('Resilience Hero');
+                }
+            }
+
+            // passive energy regen & small stress creep if energy is low
+            if (player.onGround) energy = Math.min(100, energy + dt * 3);
+            if (energy < 20) stress = Math.min(100, stress + dt * 1.1);
+
+            // update speed gently with difficulty
+            speed = 240 + difficulty * 30;
+
+            // render
+            render();
+
+            // update HUD every frame
+            scoreEl.textContent = Math.max(0, Math.floor(score));
+            distEl.textContent = Math.floor(distance);
+            stressEl.style.width = Math.min(100, Math.max(0, stress)) + '%';
+            energyEl.style.width = Math.min(100, Math.max(0, energy)) + '%';
+
+            // game over condition: stress >=100 or energy 0 and many hits
+            if (stress >= 100) {
+                running = false;
+                showMessage('Game over — you hit high stress 😔', 2200);
+                burstConfetti(12);
+                checkBest();
+                return;
+            }
+
+            if (running) requestAnimationFrame(loop);
+        }
+
+        // render function
+        function render() {
+            // clear
+            ctx.clearRect(0, 0, W, H);
+            // background gradient / ground
+            const grd = ctx.createLinearGradient(0, 0, 0, H);
+            grd.addColorStop(0, 'rgba(255,255,255,0.02)');
+            grd.addColorStop(1, 'rgba(0,0,0,0.06)');
+            ctx.fillStyle = grd;
+            ctx.fillRect(0, 0, W, H);
+
+            // sun / clouds
+            drawClouds();
+
+            // draw collectibles
+            collectibles.forEach(c => {
+                ctx.save();
+                ctx.fillStyle = '#fff';
+                ctx.font = (c.size - 4) + 'px serif';
+                ctx.fillText(c.type.emoji, c.x, c.y + c.size * 0.8);
+                ctx.restore();
+            });
+
+            // draw obstacles
+            obstacles.forEach(o => {
+                ctx.fillStyle = '#ffb3b3';
+                ctx.fillRect(o.x, o.y, o.w, o.h);
+                ctx.fillStyle = '#8b0000';
+                ctx.font = '20px serif';
+                ctx.fillText('📵', o.x + o.w / 2 - 10, o.y + o.h / 2 + 8);
+            });
+
+            // draw ground
+            ctx.fillStyle = '#0d2640';
+            ctx.fillRect(0, H - 8, W, 8);
+
+            // draw player
+            ctx.fillStyle = player.color;
+            roundRect(ctx, player.x, player.y - player.h, player.w, player.h, 8, true, false);
+            ctx.fillStyle = '#042028';
+            ctx.font = '22px serif';
+            ctx.fillText('🙂', player.x + 8, player.y - player.h / 2 + 10);
+        }
+
+        // small helper: draw clouds/sun
+        function drawClouds() {
+            // sun
+            const sunX = 80 + Math.sin(distance / 150) * 40;
+            ctx.save();
+            const sunGrad = ctx.createRadialGradient(sunX, 60, 8, sunX, 60, 50);
+            sunGrad.addColorStop(0, '#fff7c0');
+            sunGrad.addColorStop(1, 'rgba(255,244,200,0.0)');
+            ctx.fillStyle = sunGrad;
+            ctx.beginPath();
+            ctx.arc(sunX, 60, 30, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // clouds
+            for (let i = 0; i < 3; i++) {
+                const cx = (i * 220 + (distance * 0.25 % 600)) % (W + 200) - 100;
+                ctx.fillStyle = 'rgba(255,255,255,0.08)';
+                roundRect(ctx, cx, 40 + i * 12, 120, 30, 12, true, false);
+            }
+        }
+
+        // round rect util
+        function roundRect(ctx, x, y, w, h, r, fill, stroke) {
+            if (typeof r === 'undefined') r = 5;
+            ctx.beginPath();
+            ctx.moveTo(x + r, y);
+            ctx.arcTo(x + w, y, x + w, y + h, r);
+            ctx.arcTo(x + w, y + h, x, y + h, r);
+            ctx.arcTo(x, y + h, x, y, r);
+            ctx.arcTo(x, y, x + w, y, r);
+            ctx.closePath();
+            if (fill) ctx.fill();
+            if (stroke) ctx.stroke();
+        }
+
+        // small messaging
+        let msgTimeout = null;
+
+        function showMessage(txt, ms = 1200) {
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.style.position = 'absolute';
+            div.style.left = '50%';
+            div.style.top = '12px';
+            div.style.transform = 'translateX(-50%)';
+            div.textContent = txt;
+            overlay.appendChild(div);
+            if (msgTimeout) clearTimeout(msgTimeout);
+            msgTimeout = setTimeout(() => {
+                div.remove();
+            }, ms);
+        }
+
+        // tips (teaching)
+        function showTip(txt, ms = 1500) {
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.style.background = 'linear-gradient(90deg,#6ee7b7,#2bd4a2)';
+            div.style.position = 'absolute';
+            div.style.left = '50%';
+            div.style.top = '52%';
+            div.style.transform = 'translate(-50%,-50%)';
+            div.textContent = txt;
+            overlay.appendChild(div);
+            setTimeout(() => div.remove(), ms);
+        }
+
+        // tips content
+        function getTip(type) {
+            switch (type) {
+                case 'Water':
+                    return 'Stay hydrated — it helps focus & mood.';
+                case 'Nap':
+                    return 'Short naps can boost alertness and reduce stress.';
+                case 'Break':
+                    return 'Micro-breaks improve productivity and wellbeing.';
+                case 'Breath':
+                    return 'Deep breathing calms the nervous system.';
+                case 'Friend':
+                    return 'Talking helps put concerns into perspective.';
+                default:
+                    return 'Small healthy actions add up.';
+            }
+        }
+
+        // confetti
+        function burstConfetti(n = 20) {
+            for (let i = 0; i < n; i++) {
+                const el = document.createElement('div');
+                el.className = 'p';
+                const emojis = ['🎉', '✨', '🌟', '💖', '🌿', '🍀'];
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (12 + Math.random() * 26) + 'px';
+                confetti.appendChild(el);
+                setTimeout(() => el.remove(), 3000);
+            }
+        }
+
+        // award badge
+        function awardBadge(name) {
+            if (localStorage.getItem('mindful_badge') === name) return;
+            localStorage.setItem('mindful_badge', name);
+            showTip('🏅 ' + name, 1800);
+            burstConfetti(40);
+        }
+
+        // check best
+        function checkBest() {
+            if (score > best) {
+                best = Math.floor(score);
+                localStorage.setItem('mindful_best', best);
+                document.getElementById('best').textContent = best;
+                awardBadge('New High Score');
+            }
+        }
+
+        // input handlers
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') jump();
+            if (e.key === 'p') togglePause();
+        });
+        canvas.addEventListener('pointerdown', (e) => {
+            jump();
+        });
+
+        // control buttons
+        document.getElementById('startBtn').addEventListener('click', () => {
+            startGame();
+            updateHUD();
+        });
+        document.getElementById('pauseBtn').addEventListener('click', () => togglePause());
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            resetGame(true);
+        });
+
+        // resize handling to scale canvas drawing
+        function fitCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            W = rect.width;
+            H = rect.height;
+            canvas.width = W;
+            canvas.height = H;
+            // adjust player ground
+            player.y = H - 64;
+        }
+        window.addEventListener('resize', fitCanvas);
+        fitCanvas();
+
+        // main loop starter handled by startGame
+        // but we'll setup a background timer to gently decay energy & increase stress
+        setInterval(() => {
+            if (!running || paused) return;
+            energy = Math.max(0, energy - 0.3);
+            if (energy < 18) stress = Math.min(100, stress + 0.5);
+            updateHUD();
+        }, 2500);
+
+        // save best on unload
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('mindful_best', best);
+            if (localStorage.getItem('mindful_badge')) {} // keep badge
+        });
+
+        // initial draw - static scene
+        (function initialScene() {
+            ctx.clearRect(0, 0, W, H);
+            drawClouds();
+            roundRect(ctx, player.x, player.y - player.h, player.w, player.h, 8, true, false);
+            ctx.fillStyle = '#042028';
+            ctx.font = '22px serif';
+            ctx.fillText('🙂', player.x + 8, player.y - player.h / 2 + 10);
+        })();
+    </script>
+</body>
+
+</html>

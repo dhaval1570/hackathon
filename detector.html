@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Academic Stress Detector</title>
+  <link rel="stylesheet" href="detector.css" />
+</head>
+<body>
+  <div class="container">
+     <style>
+    /* ---------- Navbar Styling ---------- */
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    nav .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #2575fc;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      padding: 8px 16px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Add space after navbar */
+    header {
+      padding-top: 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Navbar -->
+  <nav>
+   
+    <ul>
+            <li><a href="psy.html">Psyc Support</a></li>
+      <li><a href="tracker.html">Tracker</a></li>
+      <li><a href="detector.html">Detector</a></li>
+     <li><a href="home.html">Home</a></li>
+    </ul>
+  </nav>
+    <header>
+      <h1>Academic Stress Detector</h1>
+      <p>Track coursework + automatically estimate stress so you can act earlier.</p>
+    </header>
+
+    <main>
+      <section class="form-card">
+        <h2>Add Task / Exam</h2>
+        <form id="taskForm">
+          <div class="row">
+            <input required id="title" placeholder="Title (e.g., Math Midterm)" />
+            <input required id="course" placeholder="Course (e.g., MATH101)" />
+          </div>
+          <div class="row">
+            <input required id="dueDate" type="date" />
+            <input required id="estHours" type="number" min="0" step="0.5" placeholder="Est. hours to prepare" />
+          </div>
+          <div class="row small">
+            <label>Self-report stress (1 low — 5 high)</label>
+            <input id="selfStress" type="range" min="1" max="5" value="3" />
+            <span id="selfStressVal">3</span>
+          </div>
+          <div class="actions">
+            <button type="submit">Save Task</button>
+            <button type="button" id="clearBtn">Clear All</button>
+            <button type="button" id="exportBtn">Export CSV</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="overview">
+        <div class="overview-top">
+          <div class="overall">
+            <h3>Overall Stress</h3>
+            <div id="overallScore" class="score">0</div>
+            <div id="overallLabel" class="label">Low</div>
+          </div>
+
+          <div class="chart-card">
+            <h3>Stress per Task</h3>
+            <canvas id="stressChart" width="600" height="220"></canvas>
+          </div>
+        </div>
+
+        <div class="task-list-card">
+          <h3>Upcoming Tasks</h3>
+          <ul id="taskList" class="task-list"></ul>
+        </div>
+      </section>
+
+      <section class="counselor">
+        <h3>Counselor View (Anonymized)</h3>
+        <button id="toggleCounselor">Toggle Counselor View</button>
+        <div id="counselorPanel" class="hidden">
+          <p><strong>Avg Stress (anonymized):</strong> <span id="avgStress">—</span></p>
+          <p><strong>Most stressful course:</strong> <span id="topCourse">—</span></p>
+          <p><strong>Tasks due within 7 days:</strong> <span id="dueSoon">0</span></p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Prototype — not medical advice. For a production system, secure authentication & privacy layers are required.</p>
+    </footer>
+  </div>
+
+  <script src="detector.js"></script>
+</body>
+</html>

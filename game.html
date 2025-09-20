@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Stress Buster Adventure 🏞️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --bg1: #0f1724;
+            --panel: rgba(255, 255, 255, 0.04);
+            --accent1: #7b61ff;
+            --accent2: #36d1dc;
+            --good: #6ee7b7;
+            --bad: #ff7a88;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+            background: radial-gradient(900px 500px at 10% 10%, rgba(123, 97, 255, 0.08), transparent), radial-gradient(800px 400px at 90% 90%, rgba(54, 209, 220, 0.05), transparent), var(--bg1);
+            color: #e6eef8;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        
+        .app {
+            width: 100%;
+            max-width: 1100px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 16px;
+            padding: 18px;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 18px;
+            box-shadow: 0 10px 40px rgba(2, 6, 23, 0.6);
+        }
+        /* Left panel (HUD) */
+        
+        .hud {
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid var(--glass);
+        }
+        
+        .logo {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+        
+        .logo .icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--accent1), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
+            font-size: 18px
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 18px
+        }
+        
+        p.small {
+            color: rgba(230, 238, 248, 0.8);
+            margin: 6px 0 12px 0;
+            font-size: 13px
+        }
+        
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.02)
+        }
+        
+        .meter {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 999px;
+            overflow: hidden;
+            width: 60%
+        }
+        
+        .meter>i {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, var(--accent2), var(--accent1))
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px
+        }
+        
+        .btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            color: #021124;
+            font-weight: 700;
+            cursor: pointer
+        }
+        
+        .btn.secondary {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--accent2)
+        }
+        
+        .tips {
+            margin-top: 12px;
+            font-size: 13px;
+            color: rgba(230, 238, 248, 0.8)
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #ffd86b, #ff7a7a);
+            color: #021124;
+            font-weight: 700;
+            margin-top: 10px
+        }
+        /* right pane (game) */
+        
+        .gameArea {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .topRow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px
+        }
+        
+        .levelInfo {
+            font-weight: 700
+        }
+        
+        .mapWrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px
+        }
+        /* grid map */
+        
+        .grid {
+            width: 720px;
+            height: 480px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(255, 255, 255, 0.01));
+            border-radius: 12px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: 36px;
+            gap: 6px;
+            position: relative;
+            box-shadow: inset 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tile {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700
+        }
+        
+        .tile.empty {
+            opacity: 0.08
+        }
+        
+        .player {
+            background: linear-gradient(135deg, #ffe082, #ffd54a);
+            color: #021124;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 18px rgba(255, 208, 84, 0.08)
+        }
+        
+        .obstacle {
+            background: linear-gradient(135deg, #ff7a7a, #ffb86b);
+            color: #021124;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .power {
+            background: linear-gradient(135deg, #6ee7b7, #2bd4a2);
+            color: #021124;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .goal {
+            background: linear-gradient(135deg, #7b61ff, #36d1dc);
+            color: #021124;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+        
+        .legend {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-left: 8px
+        }
+        
+        .legend .dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px
+        }
+        /* small screens */
+        
+        @media (max-width:980px) {
+            .app {
+                grid-template-columns: 1fr;
+                padding: 12px
+            }
+            .grid {
+                width: 100%;
+                height: 420px;
+                grid-template-columns: repeat(10, 1fr);
+                grid-auto-rows: 36px
+            }
+        }
+        /* helpers */
+        
+        .message {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2));
+            color: #021124;
+            padding: 10px 16px;
+            border-radius: 999px;
+            font-weight: 700;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4)
+        }
+        
+        .confetti {
+            position: fixed;
+            pointer-events: none;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden
+        }
+        
+        .confetti .p {
+            position: absolute;
+            font-size: 22px;
+            transform: translateY(-20vh);
+            opacity: 0.95;
+            animation: fall 2.6s linear forwards
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(120vh) rotate(360deg);
+                opacity: 1
+            }
+        }
+        
+        .smallNote {
+            font-size: 13px;
+            color: rgba(230, 238, 248, 0.8)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app" role="application" aria-label="Stress Buster Adventure game">
+        <aside class="hud" aria-hidden="false">
+            <div class="logo">
+                <div class="icon">SB</div>
+                <div>
+                    <h1>Stress Buster Adventure</h1>
+                    <p class="small">Learn coping skills while playing</p>
+                </div>
+            </div>
+
+            <div class="stat">
+                <div>Stress</div>
+                <div class="meter" title="Stress meter"><i id="stressBar"></i></div>
+                <div id="stressVal">0%</div>
+            </div>
+            <div class="stat">
+                <div>Energy</div>
+                <div class="meter"><i id="energyBar" style="background:linear-gradient(90deg,#ffd86b,#ffb86b)"></i></div>
+                <div id="energyVal">100%</div>
+            </div>
+            <div class="stat">
+                <div>Points</div>
+                <div style="font-weight:800" id="points">0</div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px">
+                <button class="btn" id="saveBtn">Save</button>
+                <button class="btn secondary" id="resetBtn">Reset</button>
+            </div>
+
+            <div class="tips">
+                <div style="margin-top:12px">Controls: Arrow keys or WASD to move.</div>
+                <div class="smallNote" style="margin-top:8px">Collect power-ups to learn a short coping tip and reduce stress. Avoid obstacles — they raise stress. Reach the camp (goal) to complete the level.</div>
+            </div>
+
+            <div style="margin-top:14px">
+                <div class="smallNote">Badge</div>
+                <div id="badgeWrap"><span class="badge" id="badge">None</span></div>
+            </div>
+        </aside>
+
+        <section class="gameArea">
+            <div class="topRow">
+                <div class="levelInfo">Level <strong id="levelNum">1</strong> • <span id="levelTitle">Campus Morning</span></div>
+                <div class="legend">
+                    <div class="smallNote">Legend</div>
+                    <div style="display:flex;gap:6px;align-items:center;margin-left:8px">
+                        <div class="dot" style="background:linear-gradient(135deg,#ffe082,#ffd54a)"></div>
+                        <div class="smallNote">You</div>
+                        <div class="dot" style="background:linear-gradient(135deg,#ff7a7a,#ffb86b)"></div>
+                        <div class="smallNote">Stress</div>
+                        <div class="dot" style="background:linear-gradient(135deg,#6ee7b7,#2bd4a2)"></div>
+                        <div class="smallNote">Power</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mapWrap">
+                <div id="grid" class="grid" tabindex="0" aria-label="Game map"></div>
+            </div>
+        </section>
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+    <div id="msgContainer"></div>
+
+    <script>
+        /* Stress Buster Adventure
+          - grid-based map
+          - obstacles raise stress
+          - power-ups reduce stress & show tip
+          - reach goal to win level
+          - persist with localStorage
+        */
+
+        // CONFIG
+        const GRID_COLS = window.innerWidth < 980 ? 10 : 12;
+        const GRID_ROWS = 12; // fixed rows for playable area
+        const TOTAL_TILES = GRID_COLS * GRID_ROWS;
+
+        // Simple levels (tile index arrays)
+        const LEVELS = [{
+            id: 1,
+            title: "Campus Morning",
+            obstacles: [14, 15, 16, 29, 30, 31, 45, 46],
+            powers: [{
+                i: 8,
+                type: 'Meditation',
+                tip: '3-min breathing can lower cortisol.'
+            }, {
+                i: 62,
+                type: 'Talk',
+                tip: 'Talking to a friend eases stress.'
+            }],
+            start: 1,
+            goal: 120,
+            timeLimit: null,
+            reward: 40
+        }, {
+            id: 2,
+            title: "Library Crunch",
+            obstacles: [22, 23, 24, 36, 37, 38, 50, 51, 52],
+            powers: [{
+                i: 5,
+                type: 'Nap',
+                tip: 'A 20-min nap boosts focus.'
+            }, {
+                i: 85,
+                type: 'Break',
+                tip: 'Short breaks improve productivity.'
+            }],
+            start: 2,
+            goal: 117,
+            timeLimit: null,
+            reward: 50
+        }, {
+            id: 3,
+            title: "Exam Week",
+            obstacles: [12, 13, 14, 25, 26, 27, 38, 39, 40, 52, 53],
+            powers: [{
+                i: 10,
+                type: 'Breathing',
+                tip: '4-4-8 breathing helps calm panic.'
+            }, {
+                i: 96,
+                type: 'Chat',
+                tip: 'Counselors can help with strategies.'
+            }],
+            start: 3,
+            goal: 116,
+            timeLimit: null,
+            reward: 70
+        }];
+
+        // state
+        let state = {
+            level: 0,
+            pos: 0, // index in grid
+            stress: 10,
+            energy: 100,
+            points: 0,
+            badge: 'None'
+        };
+
+        // DOM
+        const gridEl = document.getElementById('grid');
+        const stressBar = document.getElementById('stressBar');
+        const energyBar = document.getElementById('energyBar');
+        const stressVal = document.getElementById('stressVal');
+        const energyVal = document.getElementById('energyVal');
+        const pointsEl = document.getElementById('points');
+        const levelNumEl = document.getElementById('levelNum');
+        const levelTitleEl = document.getElementById('levelTitle');
+        const badgeEl = document.getElementById('badge');
+        const confetti = document.getElementById('confetti');
+        const msgContainer = document.getElementById('msgContainer');
+
+        let tiles = []; // will hold tile elements
+        let currentLevel = null;
+
+        // Initialize grid DOM
+        function buildGrid() {
+            gridEl.innerHTML = '';
+            tiles = [];
+            for (let i = 0; i < TOTAL_TILES; i++) {
+                const t = document.createElement('div');
+                t.className = 'tile';
+                t.dataset.idx = i;
+                // adjust empty visual
+                t.classList.add('empty');
+                gridEl.appendChild(t);
+                tiles.push(t);
+            }
+        }
+
+        // Load level into grid
+        function loadLevel(index) {
+            if (index < 0 || index >= LEVELS.length) index = 0;
+            currentLevel = JSON.parse(JSON.stringify(LEVELS[index])); // clone
+            state.level = index;
+            // clear grid
+            tiles.forEach(t => {
+                t.className = 'tile empty';
+                t.textContent = '';
+            });
+
+            // place obstacles
+            currentLevel.obstacles.forEach(idx => {
+                if (tiles[idx]) {
+                    tiles[idx].className = 'tile obstacle';
+                    tiles[idx].textContent = '⌛'; // deadline
+                }
+            });
+
+            // place powers
+            currentLevel.powers.forEach(p => {
+                if (tiles[p.i]) {
+                    tiles[p.i].className = 'tile power';
+                    tiles[p.i].textContent = getPowerEmoji(p.type);
+                    tiles[p.i].dataset.type = p.type;
+                    tiles[p.i].dataset.tip = p.tip;
+                }
+            });
+
+            // place goal
+            if (tiles[currentLevel.goal]) {
+                tiles[currentLevel.goal].className = 'tile goal';
+                tiles[currentLevel.goal].textContent = '🏕️';
+            }
+
+            // set player start
+            state.pos = currentLevel.start;
+            renderPlayer();
+            updateHUD();
+            levelNumEl.textContent = (index + 1);
+            levelTitleEl.textContent = currentLevel.title;
+            showMessage(`Level ${index+1}: ${currentLevel.title}`, 1800);
+        }
+
+        // get emoji for power type
+        function getPowerEmoji(type) {
+            if (type.toLowerCase().includes('med')) return '🧘';
+            if (type.toLowerCase().includes('nap')) return '😴';
+            if (type.toLowerCase().includes('talk')) return '🗣️';
+            if (type.toLowerCase().includes('breath')) return '🌬️';
+            if (type.toLowerCase().includes('break')) return '☕';
+            return '✨';
+        }
+
+        // draw player
+        function renderPlayer() {
+            // remove any existing player classes
+            tiles.forEach(t => t.classList.remove('player'));
+            const t = tiles[state.pos];
+            if (t) {
+                t.classList.remove('empty');
+                t.classList.add('player');
+                t.textContent = '🙂';
+            }
+        }
+
+        // movement logic
+        function move(dx, dy) {
+            const col = GRID_COLS;
+            const row = GRID_ROWS;
+            const x = state.pos % col;
+            const y = Math.floor(state.pos / col);
+            let nx = x + dx;
+            let ny = y + dy;
+            if (nx < 0 || nx >= col || ny < 0 || ny >= row) return;
+            const nIdx = ny * col + nx;
+            interactTile(nIdx);
+            state.pos = nIdx;
+            renderPlayer();
+            saveState();
+        }
+
+        // interact with tile when stepping on it
+        function interactTile(idx) {
+            const tile = tiles[idx];
+            if (!tile) return;
+            if (tile.classList.contains('obstacle')) {
+                // increase stress
+                changeStress(12);
+                changeEnergy(-8);
+                showMessage('⏳ Deadline stress! Try a quick breathing exercise.', 2000);
+                // small camera shake effect
+                tile.animate([{
+                    transform: 'translateY(0)'
+                }, {
+                    transform: 'translateY(-6px)'
+                }, {
+                    transform: 'translateY(0)'
+                }], {
+                    duration: 320
+                });
+            } else if (tile.classList.contains('power')) {
+                // apply power effect
+                const type = tile.dataset.type || 'Power';
+                const tip = tile.dataset.tip || 'Try small self-care actions.';
+                applyPower(type, tip);
+                // remove power from grid after use
+                tile.className = 'tile empty';
+                tile.textContent = '';
+            } else if (tile.classList.contains('goal')) {
+                // reached goal -> win level
+                levelComplete();
+            } else {
+                // empty tile -> small stress/time effect
+                changeStress(0);
+            }
+        }
+
+        // change stress & clamp
+        function changeStress(delta) {
+            state.stress = Math.max(0, Math.min(100, state.stress + delta));
+            updateHUD();
+            if (state.stress >= 90) {
+                showMessage('⚠️ High stress — consider using a power-up or taking a break!', 2500);
+            }
+        }
+
+        // change energy
+        function changeEnergy(delta) {
+            state.energy = Math.max(0, Math.min(100, state.energy + delta));
+            updateHUD();
+        }
+
+        // apply power-up
+        function applyPower(type, tip) {
+            // power effect mapping
+            let reduce = 10;
+            let pointsGain = 10;
+            if (type.toLowerCase().includes('nap')) {
+                reduce = 22;
+                pointsGain = 18;
+                changeEnergy(18);
+            }
+            if (type.toLowerCase().includes('medit') || type.toLowerCase().includes('breath')) {
+                reduce = 18;
+                pointsGain = 15;
+                changeEnergy(8);
+            }
+            if (type.toLowerCase().includes('talk')) {
+                reduce = 15;
+                pointsGain = 14;
+            }
+            if (type.toLowerCase().includes('break')) {
+                reduce = 12;
+                pointsGain = 10;
+                changeEnergy(6);
+            }
+
+            changeStress(-reduce);
+            state.points += pointsGain;
+            pointsEl.textContent = state.points;
+            showMessage(`${getPowerEmoji(type)} ${type} +${pointsGain} pts — ${tip}`, 2400);
+            saveState();
+            // teach short tip box
+            showTipBox(type, tip);
+        }
+
+        // tip overlay
+        function showTipBox(title, text) {
+            const box = document.createElement('div');
+            box.className = 'message';
+            box.style.background = 'linear-gradient(90deg,#6ee7b7,#2bd4a2)';
+            box.textContent = `${title}: ${text}`;
+            msgContainer.appendChild(box);
+            setTimeout(() => box.remove(), 2600);
+        }
+
+        // level complete
+        function levelComplete() {
+            // award points and progress
+            const reward = currentLevel.reward || 30;
+            state.points += reward;
+            // reduce stress a bit
+            changeStress(-20);
+            showMessage(`🏆 Level Complete! +${reward} pts`, 2400);
+            burstConfetti(32);
+            // badge logic
+            if (state.points >= 150) state.badge = 'Resilience Hero';
+            else if (state.points >= 80) state.badge = 'Self-Care Champ';
+            else if (state.points >= 40) state.badge = 'Calm Starter';
+            badgeEl.textContent = state.badge;
+            // advance to next level or wrap
+            setTimeout(() => {
+                if (state.level + 1 < LEVELS.length) {
+                    loadLevel(state.level + 1);
+                } else {
+                    showMessage('🎉 You completed all levels! Great job caring for your mind.', 3200);
+                    // reset to first with bonus
+                    setTimeout(() => loadLevel(0), 2000);
+                }
+            }, 1200);
+            saveState();
+        }
+
+        // HUD update
+        function updateHUD() {
+            const stressPct = state.stress;
+            const energyPct = state.energy;
+            stressBar.style.width = `${stressPct}%`;
+            energyBar.style.width = `${energyPct}%`;
+            stressVal.textContent = stressPct + '%';
+            energyVal.textContent = energyPct + '%';
+            pointsEl.textContent = state.points;
+            badgeEl.textContent = state.badge;
+        }
+
+        // small message popup
+        let msgTimer = null;
+
+        function showMessage(text, ms = 1600) {
+            const m = document.createElement('div');
+            m.className = 'message';
+            m.textContent = text;
+            msgContainer.appendChild(m);
+            setTimeout(() => m.remove(), ms);
+        }
+
+        // confetti
+        function burstConfetti(n = 24) {
+            for (let i = 0; i < n; i++) {
+                const el = document.createElement('div');
+                el.className = 'p';
+                const emojis = ['🎉', '✨', '🌟', '🍀', '💫', '🎈', '⭐', '💖'];
+                el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (12 + Math.random() * 24) + 'px';
+                confetti.appendChild(el);
+                setTimeout(() => el.remove(), 2600);
+            }
+        }
+
+        // keyboard handling
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowUp', 'w', 'W', 'ArrowLeft', 'a', 'A', 'ArrowRight', 'd', 'D', 'ArrowDown', 's', 'S'].includes(e.key)) {
+                e.preventDefault();
+            }
+            switch (e.key) {
+                case 'ArrowUp':
+                case 'w':
+                case 'W':
+                    move(0, -1);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                case 'S':
+                    move(0, 1);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                case 'A':
+                    move(-1, 0);
+                    break;
+                case 'ArrowRight':
+                case 'd':
+                case 'D':
+                    move(1, 0);
+                    break;
+            }
+        });
+
+        // save / load state
+        function saveState() {
+            localStorage.setItem('stressbuster_v1', JSON.stringify(state));
+        }
+
+        function loadState() {
+            const raw = localStorage.getItem('stressbuster_v1');
+            if (raw) {
+                try {
+                    const s = JSON.parse(raw);
+                    state = {...state,
+                        ...s
+                    };
+                } catch (e) {}
+            }
+        }
+
+        // reset
+        function resetGame() {
+            if (!confirm('Reset progress and restart game?')) return;
+            localStorage.removeItem('stressbuster_v1');
+            state = {
+                level: 0,
+                pos: 0,
+                stress: 10,
+                energy: 100,
+                points: 0,
+                badge: 'None'
+            };
+            loadLevel(0);
+            updateHUD();
+        }
+
+        // init
+        function init() {
+            buildGrid();
+            loadState();
+            // clamp level
+            if (state.level < 0 || state.level >= LEVELS.length) state.level = 0;
+            loadLevel(state.level);
+            // if pos saved and within bounds, use it
+            if (typeof state.pos === 'number' && state.pos >= 0 && state.pos < TOTAL_TILES) {
+                // render at saved pos
+                renderPlayer();
+            }
+            updateHUD();
+        }
+
+        // save / reset buttons
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            saveState();
+            showMessage('Saved ✔️', 900);
+        });
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+        // Accessibility: focus grid so key events work on mobile keyboards
+        gridEl.addEventListener('click', () => gridEl.focus());
+
+        // start
+        init();
+
+        // small autoplay energy decay to simulate fatigue (every 18s)
+        setInterval(() => {
+            changeEnergy(-2);
+            // small passive stress increase if energy low
+            if (state.energy < 25) changeStress(3);
+            saveState();
+        }, 18000);
+    </script>
+</body>
+
+</html>

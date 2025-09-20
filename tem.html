@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Coping Buddy — Prototype</title>
+
+  <!-- Font Awesome (optional for icons) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="tem.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-dot"></span>
+        <h1>SafeSpace • Coping Buddy</h1>
+      </div>
+      <button id="crisisBtn" class="crisis">I Need Help Now</button>
+    </header>
+
+    <main class="main">
+      <aside class="sidebar">
+        <h3>Quick Tools</h3>
+        <button class="tool" id="breathBtn"><i class="fa-solid fa-lungs"></i> 2-minute Breathing</button>
+        <button class="tool" id="groundBtn"><i class="fa-solid fa-tree"></i> 5-4-3-2-1 Grounding</button>
+        <button class="tool" id="affirmBtn"><i class="fa-solid fa-star"></i> Get Affirmation</button>
+        <div class="tips">
+          <h4>When anxious</h4>
+          <ol>
+            <li>Stop — name 3 things you see</li>
+            <li>Breathe slowly for 1 minute</li>
+            <li>Reach out to one trusted person</li>
+          </ol>
+        </div>
+      </aside>
+
+      <section class="chat-section">
+        <div id="chat" class="chat">
+          <!-- messages go here -->
+          <div class="bot-msg">
+            <div class="avatar">CB</div>
+            <div class="bubble">
+              Hi — I’m your Coping Buddy. Tell me how you’re feeling or click a tool on the left.
+            </div>
+          </div>
+        </div>
+
+        <form id="msgForm" class="msg-form" autocomplete="off">
+          <input id="msgInput" type="text" placeholder="Say something like: 'I'm anxious' or 'Help me breathe'"/>
+          <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+      </section>
+    </main>
+
+    <!-- Breathing overlay -->
+    <div id="breathOverlay" class="overlay hidden">
+      <div class="breath-card">
+        <h3>Follow the breath</h3>
+        <div id="breathCircle" class="breath-circle"></div>
+        <p id="breathText">Breathe in</p>
+        <div class="controls">
+          <button id="startBreath">Start 2-min</button>
+          <button id="stopBreath">Stop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crisis modal -->
+    <div id="crisisOverlay" class="overlay hidden">
+      <div class="crisis-card">
+        <h2>You're not alone</h2>
+        <p>If you are in immediate danger or thinking about harming yourself, please call your local emergency number now.</p>
+        <div class="helplines">
+          <p><strong>US (example):</strong> 988 (Suicide & Crisis Lifeline)</p>
+          <p><strong>India (example):</strong> 9152987821 (replace with local)</p>
+          <p><em>Replace with local helplines before release.</em></p>
+        </div>
+        <div class="crisis-actions">
+          <button id="callEmergency">Call Emergency</button>
+          <button id="closeCrisis">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <p>Built with ❤️ — prototype only. Not a substitute for professional care.</p>
+    </footer>
+  </div>
+
+  <script src="tem.js"></script>
+</body>
+</html>

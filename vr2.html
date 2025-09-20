@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>VR/AR Relaxation Room</title>
+
+    <!-- A-Frame core -->
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <!-- Environment component -->
+    <script src="https://cdn.jsdelivr.net/gh/feiss/aframe-environment-component@1.3.1/dist/aframe-environment-component.min.js"></script>
+    <!-- Extras: animations + teleport -->
+    <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+    <script src="https://unpkg.com/aframe-teleport-controls@6.1.1/dist/teleport-controls.min.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Inter, system-ui, Arial;
+            background: #071022;
+            color: #e6eef8;
+            height: 100vh;
+            overflow: hidden
+        }
+        
+        #ui {
+            position: absolute;
+            left: 16px;
+            top: 16px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+            padding: 12px 14px;
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            max-width: 440px;
+            z-index: 10;
+        }
+        
+        #ui h1 {
+            margin: 0 0 6px;
+            font-size: 1.3rem;
+            background: -webkit-linear-gradient(#7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent
+        }
+        
+        .controls-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin: 8px 0
+        }
+        
+        .controls-row label {
+            font-size: 0.9rem;
+            color: #9aa9bd
+        }
+        
+        .controls-row select,
+        .controls-row input[type="checkbox"],
+        .controls-row input[type="range"] {
+            margin-left: 6px
+        }
+        
+        .controls-row button {
+            background: linear-gradient(90deg, #7c3aed, #06b6d4);
+            color: white;
+            border: none;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .hint {
+            color: #9aa9bd;
+            font-size: 0.8rem;
+            margin: 6px 0 0
+        }
+        
+        #credits {
+            position: absolute;
+            right: 12px;
+            bottom: 8px;
+            color: #7491a6;
+            font-size: 0.75rem;
+            z-index: 9
+        }
+    </style>
+</head>
+
+<body>
+    <!-- UI Overlay -->
+    <div id="ui">
+        <h1>Relaxation Room</h1>
+        <div class="controls-row">
+            <label>Scene
+        <select id="sceneSelect">
+          <option value="forest">Forest</option>
+          <option value="beach">Beach</option>
+          <option value="night">Night Sky</option>
+        </select>
+      </label>
+            <button id="startBreath">Start Breathing</button>
+            <button id="stopBreath" disabled>Stop</button>
+        </div>
+        <div class="controls-row">
+            <label>Ambient
+        <input id="muteAmbient" type="checkbox" />
+      </label>
+            <label>Music
+        <input id="toggleMusic" type="checkbox" />
+      </label>
+            <label>Volume
+        <input id="musicVolume" type="range" min="0" max="1" step="0.05" value="0.5" />
+      </label>
+        </div>
+        <p class="hint">Use Enter VR for headset • Mobile: tap scene or use cardboard</p>
+    </div>
+
+    <!-- A-Frame Scene -->
+    <a-scene id="scene" background="color:#000000" vr-mode-ui="enterVRButton: true" renderer="colorManagement:true">
+        <!-- Camera Rig -->
+        <a-entity id="rig" position="0 1.6 0">
+            <a-entity id="camera" camera look-controls wasd-controls>
+                <a-entity cursor="fuse:false; rayOrigin:mouse" raycaster="objects:.clickable" position="0 0 -1" geometry="primitive:ring; radiusInner:0.01; radiusOuter:0.02" material="color:#7c3aed; shader:flat"></a-entity>
+            </a-entity>
+            <a-entity teleport-controls="button:trigger; collisionEntities:#floor; cameraRig:#rig"></a-entity>
+        </a-entity>
+
+        <!-- Environment -->
+        <a-entity id="env" environment="preset: forest; shadow:true; groundColor:#445; fog:0.6"></a-entity>
+        <a-plane id="floor" rotation="-90 0 0" width="60" height="60" visible="false"></a-plane>
+
+        <!-- Sounds -->
+        <a-entity id="ambientSound" sound="src:url(https://cdn.jsdelivr.net/gh/stephenhutchings/sounds@main/soft-rain-ambient.mp3); autoplay:true; loop:true; volume:0.7"></a-entity>
+        <a-entity id="posSound" position="4 1 -3" sound="src:url(https://cdn.jsdelivr.net/gh/stephenhutchings/sounds@main/water-stream.mp3); autoplay:false; loop:true; volume:0.8" visible="false"></a-entity>
+        <audio id="bgMusic" src="https://cdn.pixabay.com/download/audio/2023/06/20/audio_fa0a4b56cf.mp3?filename=relaxing-piano-14365.mp3" loop></audio>
+
+        <!-- Breathing Orb -->
+        <a-sphere class="clickable" id="breathOrb" position="0 1.5 -2" radius="0.5" material="color:#7c3aed; opacity:0.85; shader:standard" animation="property: scale; dir:alternate; dur:2000; easing:easeInOutSine; to:1.12 1.12 1.12; startEvents:breatheStart; pauseEvents:breatheStop"></a-sphere>
+        <a-entity id="breathText" position="0 2.2 -1.6" visible="false">
+            <a-text id="breathLabel" value="Breathe" align="center" color="#e6eef8" width="2.5"></a-text>
+        </a-entity>
+
+        <!-- Nature: Trees -->
+        <a-cylinder id="tree1" position="3 0 -6" radius="0.3" height="3" color="#5c4033"></a-cylinder>
+        <a-cone position="3 2 -6" radius-bottom="2" height="3" color="#2e8b57"></a-cone>
+        <a-cylinder id="tree2" position="-4 0 -7" radius="0.25" height="2.5" color="#5c4033"></a-cylinder>
+        <a-cone position="-4 1.8 -7" radius-bottom="1.8" height="2.5" color="#3cb371"></a-cone>
+
+        <!-- Birds -->
+        <a-entity id="bird" geometry="primitive: cone; radiusBottom:0.3; height:0.6" material="color:#fffacd; emissive:#ffffcc" position="-5 4 -10" animation="property: position; to:5 5 -8; dur:8000; loop:true; dir:alternate"></a-entity>
+
+        <!-- Fireflies (night only) -->
+        <a-entity id="firefly" position="1 2 -2" visible="false">
+            <a-entity light="type:point; intensity:0.8; distance:6; color:#ffd166"></a-entity>
+            <a-sphere radius="0.05" material="emissive:#ffd166; color:#ffd166"></a-sphere>
+        </a-entity>
+
+        <!-- Stars -->
+        <a-entity id="stars" visible="false"></a-entity>
+        <a-sky id="sky" color="#87ceeb"></a-sky>
+    </a-scene>
+
+    <footer id="credits">Prototype • Demo only — not a clinical tool</footer>
+
+    <!-- Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const env = document.querySelector('#env');
+            const sky = document.querySelector('#sky');
+            const ambient = document.querySelector('#ambientSound');
+            const posSound = document.querySelector('#posSound');
+            const breathOrb = document.querySelector('#breathOrb');
+            const breathText = document.querySelector('#breathText');
+            const sceneSelect = document.getElementById('sceneSelect');
+            const startBreathBtn = document.getElementById('startBreath');
+            const stopBreathBtn = document.getElementById('stopBreath');
+            const muteAmbient = document.getElementById('muteAmbient');
+            const bgMusic = document.getElementById('bgMusic');
+            const toggleMusic = document.getElementById('toggleMusic');
+            const musicVolume = document.getElementById('musicVolume');
+            const firefly = document.getElementById('firefly');
+            let breatheInterval = null;
+
+            const scenes = {
+                forest: {
+                    env: 'preset: forest; dressingAmount:30;',
+                    sky: '#7bc57f',
+                    ambient: 'soft-rain-ambient.mp3',
+                    pos: 'water-stream.mp3',
+                    stars: false,
+                    fireflies: false
+                },
+                beach: {
+                    env: 'preset: seaside; seaColor:#6fc2d2;',
+                    sky: '#a7d8ff',
+                    ambient: 'ocean-waves.mp3',
+                    pos: 'waves-close.mp3',
+                    stars: false,
+                    fireflies: false
+                },
+                night: {
+                    env: 'preset: caves; fog:0.85;',
+                    sky: '#000011',
+                    ambient: 'night-ambience.mp3',
+                    pos: '',
+                    stars: true,
+                    fireflies: true
+                }
+            };
+
+            function applyScene(name) {
+                const cfg = scenes[name];
+                if (!cfg) return;
+                env.setAttribute('environment', cfg.env);
+                sky.setAttribute('color', cfg.sky);
+                ambient.setAttribute('sound', `src:url(https://cdn.jsdelivr.net/gh/stephenhutchings/sounds@main/${cfg.ambient}); autoplay:true; loop:true; volume:0.7`);
+                if (cfg.pos) {
+                    posSound.setAttribute('sound', `src:url(https://cdn.jsdelivr.net/gh/stephenhutchings/sounds@main/${cfg.pos}); autoplay:true; loop:true; volume:0.8`);
+                    posSound.setAttribute('visible', true);
+                } else {
+                    posSound.setAttribute('visible', false);
+                }
+                const stars = document.querySelector('#stars');
+                stars.setAttribute('visible', cfg.stars);
+                firefly.setAttribute('visible', cfg.fireflies);
+                if (cfg.stars && !stars.hasChildNodes()) {
+                    for (let i = 0; i < 120; i++) {
+                        let s = document.createElement('a-sphere');
+                        s.setAttribute('position', `${(Math.random()-0.5)*40} ${6+Math.random()*8} ${(Math.random()-0.5)*40}`);
+                        s.setAttribute('radius', 0.03 + Math.random() * 0.06);
+                        s.setAttribute('material', 'color:#fff; emissive:#fff; emissiveIntensity:0.8');
+                        stars.appendChild(s);
+                    }
+                }
+            }
+            applyScene(sceneSelect.value);
+
+            sceneSelect.addEventListener('change', e => applyScene(e.target.value));
+            muteAmbient.addEventListener('change', e => {
+                if (e.target.checked) ambient.components.sound.stopSound();
+                else ambient.components.sound.playSound();
+            });
+            toggleMusic.addEventListener('change', e => {
+                if (e.target.checked) {
+                    bgMusic.volume = musicVolume.value;
+                    bgMusic.play();
+                } else bgMusic.pause();
+            });
+            musicVolume.addEventListener('input', e => {
+                bgMusic.volume = e.target.value;
+            });
+
+            function countdown(seconds, label) {
+                return new Promise(resolve => {
+                    let s = seconds;
+                    const t = setInterval(() => {
+                        label.setAttribute('value', `${label.getAttribute('value').split('—')[0]} — ${s}`);
+                        s--;
+                        if (s < 0) {
+                            clearInterval(t);
+                            resolve();
+                        }
+                    }, 1000);
+                });
+            }
+
+            function startBreathing() {
+                if (breatheInterval) return;
+                breathText.setAttribute('visible', true);
+                breathOrb.emit('breatheStart');
+                startBreathBtn.disabled = true;
+                stopBreathBtn.disabled = false;
+                const cycle = async() => {
+                    const label = breathText.querySelector('a-text');
+                    label.setAttribute('value', 'Inhale — 4');
+                    await countdown(4, label);
+                    label.setAttribute('value', 'Hold — 4');
+                    await countdown(4, label);
+                    label.setAttribute('value', 'Exhale — 6');
+                    await countdown(6, label);
+                    if (breatheInterval) cycle();
+                };
+                breatheInterval = true;
+                cycle();
+            }
+
+            function stopBreathing() {
+                if (!breatheInterval) return;
+                breatheInterval = null;
+                breathText.setAttribute('visible', false);
+                breathOrb.emit('breatheStop');
+                startBreathBtn.disabled = false;
+                stopBreathBtn.disabled = true;
+            }
+            startBreathBtn.onclick = startBreathing;
+            stopBreathBtn.onclick = stopBreathing;
+        });
+    </script>
+</body>
+
+</html>

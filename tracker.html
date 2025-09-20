@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mental Health Tracker</title>
+  <link rel="stylesheet" href="tracker.css" />
+</head>
+<body>
+  <div class="app">
+    <style>
+    /* ---------- Navbar Styling ---------- */
+    nav {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    nav .logo {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #2575fc;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      gap: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #333;
+      padding: 8px 16px;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Add space after navbar */
+    header {
+      padding-top: 40px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Navbar -->
+  <nav>
+    <ul>
+      <li><a href="psy.html">Psyc Support</a></li>
+      <li><a href="tracker.html">Tracker</a></li>
+      <li><a href="detector.html">Detector</a></li>
+      <li><a href="home.html">Home</a></li>
+    </ul>
+  </nav>
+<br><br>
+    <header>
+      <h1>🌱 Mental Health Tracker</h1>
+      <p>Log healthy habits and grow your wellbeing tree!</p>
+    </header>
+
+    <main>
+      <section class="tasks">
+        <h2>Today's Activities</h2>
+        <div class="task-list">
+          <label><input type="checkbox" class="task" value="Meditation"/> Meditation</label>
+          <label><input type="checkbox" class="task" value="Gratitude"/> Gratitude Journal</label>
+          <label><input type="checkbox" class="task" value="Exercise"/> Exercise</label>
+          <label><input type="checkbox" class="task" value="Journaling"/> Journaling</label>
+        </div>
+      </section>
+
+      <section class="progress">
+        <h2>Your Progress</h2>
+        <div class="progress-bar">
+          <div id="progressFill"></div>
+        </div>
+        <p id="progressText">0 / 4 activities completed</p>
+        <p>Streak: <span id="streak">0</span> days 🌟</p>
+      </section>
+
+      <section class="tree-section">
+        <h2>Your Wellbeing Tree</h2>
+        <div class="tree">
+          <div class="trunk"></div>
+          <div class="leaves" id="leaves"></div>
+        </div>
+        <p id="treeMessage">Complete activities to grow your tree!</p>
+      </section>
+    </main>
+
+    <footer>
+      <p>💚 This is a demo. Not a substitute for professional care.</p>
+    </footer>
+  </div>
+
+  <script src="tracker.js"></script>
+</body>
+</html>

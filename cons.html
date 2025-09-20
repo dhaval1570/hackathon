@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Counsellor Booking</title>
+  <link rel="stylesheet" href="cons.css" />
+</head>
+<body>
+  <h1>Counsellor Profiles</h1>
+  <div class="card-container">
+    <div class="card">
+      <img src="https://via.placeholder.com/150" alt="Counsellor Photo" />
+      <h2>Dr. Aisha Mehta</h2>
+      <p>Specialty: Anxiety & Stress</p>
+      <p>Available: Mon–Fri, 10am–4pm</p>
+      <button onclick="openModal('Dr. Aisha Mehta')">Book Now</button>
+    </div>
+    <div class="card">
+      <img src="https://via.placeholder.com/150" alt="Counsellor Photo" />
+      <h2>Mr. Rahul Desai</h2>
+      <p>Specialty: Academic Pressure</p>
+      <p>Available: Tue–Sat, 1pm–6pm</p>
+      <button onclick="openModal('Mr. Rahul Desai')">Book Now</button>
+    </div>
+  </div>
+  <div class="card">
+    <img src="https://via.placeholder.com/150" alt="Counsellor Photo" />
+    <h2>Mr. Rahul Desai</h2>
+    <p>Specialty: Academic Pressure</p>
+    <p>Available: Tue–Sat, 1pm–6pm</p>
+    <button onclick="openModal('Mr. Rahul Desai')">Book Now</button>
+  </div>
+</div>
+<div class="card">
+    <img src="https://via.placeholder.com/150" alt="Counsellor Photo" />
+    <h2>Mr. Rahul Desai</h2>
+    <p>Specialty: Academic Pressure</p>
+    <p>Available: Tue–Sat, 1pm–6pm</p>
+    <button onclick="openModal('Mr. Rahul Desai')">Book Now</button>
+  </div>
+</div>
+<div class="card">
+    <img src="https://via.placeholder.com/150" alt="Counsellor Photo" />
+    <h2>Mr. Rahul Desai</h2>
+    <p>Specialty: Academic Pressure</p>
+    <p>Available: Tue–Sat, 1pm–6pm</p>
+    <button onclick="openModal('Mr. Rahul Desai')">Book Now</button>
+  </div>
+</div>
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle">Book Appointment</h2>
+      <form action="book.php" method="POST">
+        <label for="studentName">Your Name:</label>
+        <input type="text" id="studentName" name="studentName" required />
+      
+        <label for="date">Preferred Date:</label>
+        <input type="date" id="date" name="date" required />
+      
+        <label for="time">Preferred Time:</label>
+        <input type="time" id="time" name="time" required />
+      
+        <!-- hidden field for counsellor -->
+        <input type="hidden" name="counsellor" id="counsellor" />
+      
+        <button type="submit">Confirm Booking</button>
+      </form>
+      
+      
+    </div>
+  </div>
+
+  <script src="cons.js"></script>
+</body>
+</html>

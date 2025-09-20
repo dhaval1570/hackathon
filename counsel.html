@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Counsellor Booking</title>
+    <style>
+        /* ---------- General Page Styling ---------- */
+        
+        body {
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            color: #333;
+        }
+        
+        h1 {
+            text-align: center;
+            padding: 30px 10px;
+            color: #222;
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+        /* ---------- Card Container ---------- */
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            padding: 30px;
+            max-width: 1100px;
+            margin: auto;
+        }
+        
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 6px solid #2575fc;
+        }
+        
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card h2 {
+            margin: 0 0 10px;
+            font-size: 1.3rem;
+            color: #2575fc;
+        }
+        
+        .card p {
+            margin: 6px 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .card button {
+            margin-top: 15px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 10px 18px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+        
+        .card button:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+            transform: scale(1.05);
+        }
+        /* ---------- Modal ---------- */
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            width: 320px;
+            margin: 100px auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.4s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .close {
+            float: right;
+            font-size: 1.5rem;
+            color: #888;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .close:hover {
+            color: #000;
+        }
+        /* ---------- Form Styling ---------- */
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        
+        form label {
+            text-align: left;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #444;
+        }
+        
+        form input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s, box-shadow 0.3s;
+        }
+        
+        form input:focus {
+            border: 1px solid #2575fc;
+            box-shadow: 0 0 6px rgba(37, 117, 252, 0.3);
+            outline: none;
+        }
+        
+        form button {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        
+        form button:hover {
+            background: linear-gradient(135deg, #38ef7d, #11998e);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Available Counsellors</h1>
+    <a href="home.html" style="position:fixed; bottom:20px; right:20px;
+          background: linear-gradient(135deg, #6a11cb, #2575fc);
+          color: white;
+          text-decoration: none;
+          padding: 12px 24px;
+          border-radius: 30px;
+          font-weight: bold;
+          transition: 0.3s;
+          box-shadow: 0 6px 15px rgba(0,0,0,0.3);">
+  Home
+</a>
+
+    <div class="card-container">
+        <div class="card">
+            <h2>Dr. Aisha Mehta</h2>
+            <p><strong>Specialty:</strong> Anxiety & Stress</p>
+            <p><strong>Available:</strong> Mon–Fri, 10am–4pm</p>
+            <button onclick="openModal('Dr. Aisha Mehta')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Mr. Rahul Desai</h2>
+            <p><strong>Specialty:</strong> Academic Pressure</p>
+            <p><strong>Available:</strong> Tue–Sat, 1pm–6pm</p>
+            <button onclick="openModal('Mr. Rahul Desai')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Dr. Kavita Sharma</h2>
+            <p><strong>Specialty:</strong> Relationship Counselling</p>
+            <p><strong>Available:</strong> Mon–Thu, 11am–5pm</p>
+            <button onclick="openModal('Dr. Kavita Sharma')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Prof. Neeraj Patel</h2>
+            <p><strong>Specialty:</strong> Career Guidance</p>
+            <p><strong>Available:</strong> Wed–Sat, 9am–2pm</p>
+            <button onclick="openModal('Prof. Neeraj Patel')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Ms. Priya Kapoor</h2>
+            <p><strong>Specialty:</strong> Depression Support</p>
+            <p><strong>Available:</strong> Mon–Fri, 2pm–7pm</p>
+            <button onclick="openModal('Ms. Priya Kapoor')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Dr. Sameer Khan</h2>
+            <p><strong>Specialty:</strong> Anger Management</p>
+            <p><strong>Available:</strong> Tue–Sun, 3pm–8pm</p>
+            <button onclick="openModal('Dr. Sameer Khan')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Dr. Sneha Reddy</h2>
+            <p><strong>Specialty:</strong> Child & Adolescent Therapy</p>
+            <p><strong>Available:</strong> Mon–Fri, 9am–1pm</p>
+            <button onclick="openModal('Dr. Sneha Reddy')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Mr. Arjun Malhotra</h2>
+            <p><strong>Specialty:</strong> Workplace Stress</p>
+            <p><strong>Available:</strong> Wed–Sun, 12pm–6pm</p>
+            <button onclick="openModal('Mr. Arjun Malhotra')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Dr. Meera Iyer</h2>
+            <p><strong>Specialty:</strong> Trauma Healing</p>
+            <p><strong>Available:</strong> Tue–Fri, 10am–3pm</p>
+            <button onclick="openModal('Dr. Meera Iyer')">Book Now</button>
+        </div>
+
+        <div class="card">
+            <h2>Prof. Vikram Sethi</h2>
+            <p><strong>Specialty:</strong> Addiction Recovery</p>
+            <p><strong>Available:</strong> Mon–Sat, 4pm–9pm</p>
+            <button onclick="openModal('Prof. Vikram Sethi')">Book Now</button>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Book Appointment</h2>
+
+            <form action="book.php" method="POST">
+                <label for="studentName">Your Name:</label>
+                <input type="text" id="studentName" name="studentName" required />
+
+                <label for="date">Preferred Date:</label>
+                <input type="date" id="date" name="date" required />
+
+                <label for="time">Preferred Time:</label>
+                <input type="time" id="time" name="time" required />
+
+                <input type="hidden" name="counsellor" id="counsellor" />
+
+                <button type="submit">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openModal(counsellorName) {
+            document.getElementById("bookingModal").style.display = "block";
+            document.getElementById("modalTitle").innerText =
+                "Book Appointment with " + counsellorName;
+            document.getElementById("counsellor").value = counsellorName;
+        }
+
+        function closeModal() {
+            document.getElementById("bookingModal").style.display = "none";
+        }
+    </script>
+
+</body>
+
+</html>

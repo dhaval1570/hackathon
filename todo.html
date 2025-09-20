@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mental Wellness To-Do</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+         :root {
+            --bg1: #081229;
+            /* default deep night */
+            --card: rgba(255, 255, 255, 0.06);
+            --muted: rgba(255, 255, 255, 0.65);
+            --accent: #7c3aed;
+            --accent2: #06b6d4;
+            --glass: rgba(255, 255, 255, 0.04);
+            --radius: 14px;
+            --shadow: 0 6px 30px rgba(2, 6, 23, 0.6);
+        }
+        /* Page background & layout */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            -webkit-font-smoothing: antialiased;
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(124, 58, 237, 0.12), transparent), radial-gradient(900px 400px at 90% 90%, rgba(6, 182, 212, 0.08), transparent), linear-gradient(180deg, var(--bg1), #021022 90%);
+            color: #e9f0ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            transition: background 700ms ease;
+            background-attachment: fixed;
+        }
+        /* Main container */
+        
+        .wrap {
+            width: 100%;
+            max-width: 920px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px) saturate(110%);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        
+        header {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+        
+        .logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 22px;
+            color: white;
+            box-shadow: 0 6px 24px rgba(12, 20, 40, 0.45), inset 0 -6px 18px rgba(0, 0, 0, 0.15);
+            flex: 0 0 64px;
+        }
+        
+        h1 {
+            font-size: 1.35rem;
+            margin: 0;
+            line-height: 1.05;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        
+        p.lead {
+            margin: 4px 0 0 0;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+        /* Input area */
+        
+        .new-item {
+            display: flex;
+            gap: 12px;
+            margin: 18px 0 22px;
+            align-items: center;
+        }
+        
+        .new-item input[type="text"] {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: var(--glass);
+            color: #f6fbff;
+            box-shadow: 0 4px 18px rgba(2, 6, 23, 0.45) inset;
+        }
+        
+        .btn {
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 160ms ease, box-shadow 160ms ease;
+            box-shadow: 0 8px 24px rgba(7, 11, 36, 0.35);
+        }
+        
+        .btn:active {
+            transform: translateY(1px) scale(0.997);
+        }
+        /* List */
+        
+        .todo-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .todo {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 14px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: transform 260ms cubic-bezier(.2, .9, .28, 1), background 350ms ease, opacity 260ms ease;
+            box-shadow: 0 6px 18px rgba(3, 8, 20, 0.45);
+        }
+        
+        .todo .checkwrap {
+            min-width: 44px;
+            min-height: 44px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        /* custom checkbox look */
+        
+        input[type="checkbox"] {
+            width: 22px;
+            height: 22px;
+            accent-color: transparent;
+            /* we'll style custom */
+            position: relative;
+            appearance: none;
+            -webkit-appearance: none;
+            outline: none;
+            border-radius: 6px;
+            border: 2px solid rgba(255, 255, 255, 0.18);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.01));
+            cursor: pointer;
+            transition: all 220ms cubic-bezier(.2, .9, .28, 1);
+            display: inline-block;
+        }
+        
+        input[type="checkbox"]:checked {
+            transform: rotate(-6deg) scale(1.04);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 6px 20px rgba(7, 11, 36, 0.35), 0 0 20px rgba(124, 58, 237, 0.09);
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(6, 182, 212, 0.85));
+        }
+        /* text */
+        
+        .todo .text {
+            flex: 1;
+            font-size: 1rem;
+            color: #eaf2ff;
+        }
+        
+        .todo .meta {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+        
+        .todo.completed {
+            transform: translateY(-2px) scale(0.996);
+            opacity: 0.95;
+            border-color: rgba(255, 255, 255, 0.04);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.01));
+        }
+        
+        .todo .text.completed {
+            text-decoration: line-through;
+            color: rgba(255, 255, 255, 0.65);
+            opacity: 0.92;
+        }
+        
+        .small {
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .pill {
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--muted);
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+        
+        .trash {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            cursor: pointer;
+            font-size: 1.05rem;
+            padding: 6px;
+        }
+        /* Footer tips */
+        
+        .tips {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+        /* subtle floating decor */
+        
+        .floating {
+            position: absolute;
+            pointer-events: none;
+            filter: blur(12px) saturate(120%);
+            opacity: 0.15;
+            z-index: 0;
+        }
+        /* small responsive */
+        
+        @media (max-width:640px) {
+            .wrap {
+                padding: 18px;
+                border-radius: 12px;
+            }
+            .logo {
+                width: 56px;
+                height: 56px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Decorative blobs (non-interactive) -->
+    <svg class="floating" width="420" height="420" style="left:-80px; top:-60px; position:fixed;">
+    <defs>
+      <linearGradient id="g1" x1="0" x2="1">
+        <stop offset="0" stop-color="#7c3aed"/>
+        <stop offset="1" stop-color="#06b6d4"/>
+      </linearGradient>
+    </defs>
+    <circle cx="220" cy="160" r="120" fill="url(#g1)" />
+  </svg>
+
+    <div class="wrap" role="application" aria-labelledby="main-title">
+        <header>
+            <div class="logo" aria-hidden="true">MW</div>
+            <div>
+                <h1 id="main-title">Mental Wellness To-Do</h1>
+                <p class="lead">Small daily habits build resilience. Check items as you complete them — the page will gently shift to celebrate progress.</p>
+            </div>
+        </header>
+
+        <div class="new-item" aria-hidden="false">
+            <input id="newText" type="text" placeholder="Add a mindful activity (e.g. 10-min breathing, gratitude note)" aria-label="Add new to-do">
+            <button id="addBtn" class="btn" aria-label="Add to-do">Add</button>
+        </div>
+
+        <div class="todo-list" id="list" aria-live="polite"></div>
+
+        <div class="controls">
+            <div class="pill" id="progressPill">Completed: 0 / 0</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+                <button id="clearCompleted" class="btn" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted);">Clear Completed</button>
+                <button id="resetAll" class="btn" style="background:transparent; border:1px solid rgba(255,255,255,0.06); color:var(--muted);">Reset</button>
+            </div>
+        </div>
+
+        <div class="tips">
+            Tip: try adding short, achievable tasks — "3 deep breaths" or "1-minute stretch". Completing more than one item introduces a warmer, calmer background.
+        </div>
+    </div>
+
+    <script>
+        /* Mental Wellness To-Do JS
+               - Adds/removes items
+               - Stores in localStorage
+               - Changes page background gently based on completed ratio
+            */
+
+        const defaultItems = [{
+            text: "3 deep breaths (box breathing)",
+            done: false
+        }, {
+            text: "Drink a glass of water",
+            done: false
+        }, {
+            text: "1-minute mindful stretch",
+            done: false
+        }, {
+            text: "Write 1 thing you're grateful for",
+            done: false
+        }, {
+            text: "Step outside for fresh air (2–5 min)",
+            done: false
+        }, ];
+
+        const listEl = document.getElementById('list');
+        const newText = document.getElementById('newText');
+        const addBtn = document.getElementById('addBtn');
+        const progressPill = document.getElementById('progressPill');
+        const clearCompleted = document.getElementById('clearCompleted');
+        const resetAll = document.getElementById('resetAll');
+
+        // Load from storage or initialize
+        let todos = JSON.parse(localStorage.getItem('mw_todos') || 'null');
+        if (!Array.isArray(todos)) {
+            todos = defaultItems.slice();
+            save();
+        }
+
+        function save() {
+            localStorage.setItem('mw_todos', JSON.stringify(todos));
+            render();
+        }
+
+        function render() {
+            listEl.innerHTML = '';
+            todos.forEach((item, idx) => {
+                const row = document.createElement('div');
+                row.className = 'todo' + (item.done ? ' completed' : '');
+                row.setAttribute('data-idx', idx);
+
+                const checkwrap = document.createElement('div');
+                checkwrap.className = 'checkwrap';
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = !!item.done;
+                checkbox.setAttribute('aria-label', item.text + (item.done ? ' completed' : ' not completed'));
+                checkwrap.appendChild(checkbox);
+
+                const text = document.createElement('div');
+                text.className = 'text' + (item.done ? ' completed' : '');
+                text.textContent = item.text;
+
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                meta.innerHTML = `
+          <span class="small">${item.done ? 'Done' : 'Pending'}</span>
+          <button class="trash" title="Delete" aria-label="Delete ${item.text}">&times;</button>
+        `;
+
+                row.appendChild(checkwrap);
+                row.appendChild(text);
+                row.appendChild(meta);
+
+                // events
+                checkbox.addEventListener('change', (e) => {
+                    todos[idx].done = e.target.checked;
+                    save();
+                    animateBackground();
+                });
+
+                meta.querySelector('.trash').addEventListener('click', () => {
+                    todos.splice(idx, 1);
+                    save();
+                });
+
+                // make clicking text toggle (accessible)
+                text.addEventListener('click', () => {
+                    checkbox.checked = !checkbox.checked;
+                    checkbox.dispatchEvent(new Event('change'));
+                });
+
+                listEl.appendChild(row);
+            });
+
+            updateProgress();
+            animateBackground(); // ensure body background fits current state
+        }
+
+        function updateProgress() {
+            const total = todos.length;
+            const done = todos.filter(t => t.done).length;
+            progressPill.textContent = `Completed: ${done} / ${total}`;
+        }
+
+        addBtn.addEventListener('click', addNew);
+        newText.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') addNew();
+        });
+
+        function addNew() {
+            const v = newText.value.trim();
+            if (!v) return;
+            todos.unshift({
+                text: v,
+                done: false
+            });
+            newText.value = '';
+            save();
+            // focus new input for quick items
+            newText.focus();
+        }
+
+        clearCompleted.addEventListener('click', () => {
+            todos = todos.filter(t => !t.done);
+            save();
+        });
+
+        resetAll.addEventListener('click', () => {
+            if (!confirm('Reset all items to default list?')) return;
+            todos = defaultItems.slice();
+            save();
+        });
+
+        // Background animation behavior:
+        // - 0% complete: default calm night gradient
+        // - 1..49%: soft cool gradient
+        // - 50..99%: warmer, brighter gradient
+        // - 100%: celebratory sunrise gradient + subtle confetti vibe
+
+        function animateBackground() {
+            const done = todos.filter(t => t.done).length;
+            const total = todos.length || 1;
+            const ratio = done / total;
+
+            // base values
+            document.body.style.transition = 'background 700ms ease';
+
+            if (ratio === 0) {
+                document.body.style.background = `
+          radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent),
+          radial-gradient(900px 400px at 90% 90%, rgba(6,182,212,0.08), transparent),
+          linear-gradient(180deg, #081229, #021022 90%)`;
+            } else if (ratio > 0 && ratio < 0.5) {
+                // soft teal sunrise
+                document.body.style.background = `
+          radial-gradient(900px 500px at 15% 15%, rgba(6,182,212,0.12), transparent),
+          radial-gradient(700px 360px at 95% 85%, rgba(124,58,237,0.06), transparent),
+          linear-gradient(180deg, #052b3a 0%, #021923 100%)`;
+            } else if (ratio >= 0.5 && ratio < 1) {
+                // warm calm
+                document.body.style.background = `
+          radial-gradient(1000px 600px at 10% 10%, rgba(255,160,122,0.08), transparent),
+          radial-gradient(800px 360px at 90% 90%, rgba(124,58,237,0.06), transparent),
+          linear-gradient(180deg, #12304a 0%, #041523 100%)`;
+            } else {
+                // 100% — celebratory sunrise gradient
+                document.body.style.background = `
+          radial-gradient(900px 500px at 15% 15%, rgba(255,200,110,0.12), transparent),
+          radial-gradient(900px 400px at 85% 85%, rgba(124,58,237,0.06), transparent),
+          linear-gradient(180deg, #0b2540 0%, #042030 40%, #ffefc3 100%)`;
+                // tiny gentle animation to celebrate
+                confettiPulse();
+            }
+        }
+
+        // tiny celebratory pulse (not heavy)
+        function confettiPulse() {
+            // create a very subtle overlay pulse and remove
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.inset = 0;
+            overlay.style.pointerEvents = 'none';
+            overlay.style.backgroundImage = 'radial-gradient(circle at 20% 20%, rgba(255,243,205,0.14), transparent), radial-gradient(circle at 80% 80%, rgba(199,240,255,0.08), transparent)';
+            overlay.style.opacity = '0';
+            overlay.style.transition = 'opacity 800ms ease';
+            document.body.appendChild(overlay);
+            requestAnimationFrame(() => overlay.style.opacity = '1');
+            setTimeout(() => overlay.style.opacity = '0', 900);
+            setTimeout(() => overlay.remove(), 1750);
+        }
+
+        // initial render
+        render();
+    </script>
+</body>
+
+</html>

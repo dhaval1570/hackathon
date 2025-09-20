@@ -1,0 +1,95 @@
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: "Poppins", sans-serif; }
+body {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #6a11cb, #2575fc, #43cea2, #185a9d);
+  background-size: 400% 400%;
+  animation: gradient 12s ease infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: #fff;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.app {
+  width: 100%;
+  max-width: 700px;
+  padding: 30px;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.1);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+header h1 { font-size: 32px; margin-bottom: 8px; text-shadow: 0 0 12px rgba(255,255,255,0.6); }
+header p { opacity: 0.9; margin-bottom: 20px; }
+
+section { margin: 20px 0; }
+
+.task-list label {
+  display: block;
+  background: rgba(255,255,255,0.15);
+  margin: 8px 0;
+  padding: 10px 15px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.task-list label:hover { background: rgba(255,255,255,0.3); }
+.task-list input { margin-right: 8px; }
+
+.progress-bar {
+  height: 20px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  margin: 12px 0;
+  overflow: hidden;
+}
+#progressFill {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #84fab0, #8fd3f4);
+  transition: width 0.4s ease;
+}
+
+.tree-section { margin-top: 30px; }
+.tree {
+  position: relative;
+  width: 120px;
+  height: 200px;
+  margin: 0 auto;
+}
+.trunk {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 80px;
+  background: #5d4037;
+  border-radius: 8px;
+}
+.leaves {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: green;
+  transition: all 0.5s ease;
+}
+.grown-1 { width: 60px; height: 60px; background: #66bb6a; }
+.grown-2 { width: 90px; height: 90px; background: #4caf50; }
+.grown-3 { width: 120px; height: 120px; background: #388e3c; }
+.grown-4 { width: 150px; height: 150px; background: #2e7d32; }
+
+footer { margin-top: 20px; font-size: 14px; opacity: 0.8; }

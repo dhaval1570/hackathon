@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mood AI Journal</title>
+  <link rel="stylesheet" href="journal.css" />
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>📝 Mood AI Journal</h1>
+      <p>Write your thoughts daily. Track your mood over time.</p>
+    </header>
+
+    <main>
+      <!-- Journal Form -->
+      <section class="journal-input">
+        <h2>New Entry</h2>
+        <textarea id="entryText" placeholder="How are you feeling today?"></textarea>
+        <button id="analyzeBtn">Save & Analyze</button>
+      </section>
+
+      <!-- Result -->
+      <section id="analysisResult" class="result hidden">
+        <h2>Today's Mood</h2>
+        <p id="moodText"></p>
+      </section>
+
+      <!-- Journal History -->
+      <section class="history">
+        <h2>Past Entries</h2>
+        <ul id="entryList"></ul>
+      </section>
+
+      <!-- Mood Chart -->
+      <section class="chart-section">
+        <h2>Mood Trend</h2>
+        <canvas id="moodChart" width="600" height="250"></canvas>
+      </section>
+    </main>
+
+    <footer>
+      <p>💚 Prototype only — not a substitute for professional care.</p>
+    </footer>
+  </div>
+
+  <script src="journal.js"></script>
+</body>
+</html>

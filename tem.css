@@ -1,0 +1,173 @@
+/* Reset & font */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root{
+  --bg1:#0f1724; --bg2:#10223a;
+  --accent1: #6a11cb; --accent2:#2575fc;
+  --glass: rgba(255,255,255,0.06);
+  --muted: rgba(255,255,255,0.7);
+}
+body{
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  min-height:100vh;
+  background: linear-gradient(135deg,var(--accent1),var(--accent2));
+  color: #fff;
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  padding:28px;
+}
+
+/* App shell */
+.app{
+  width: 100%;
+  max-width:1100px;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow: 0 14px 50px rgba(2,6,23,0.6);
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.08));
+  display:flex;
+  flex-direction:column;
+}
+
+/* Header */
+.app-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 24px;
+  gap:12px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06));
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.logo{ display:flex; align-items:center; gap:12px; }
+.logo-dot{
+  width:44px; height:44px; border-radius:50%;
+  background: radial-gradient(circle at 30% 30%, #fff6, transparent 40%), linear-gradient(135deg,var(--accent1),var(--accent2));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  display:inline-block;
+}
+.app-header h1{ font-size:18px; letter-spacing:0.4px; font-weight:700; color:#fff; }
+
+/* Crisis button */
+.crisis{
+  background: linear-gradient(90deg,#ff6b6b,#ff9a9e);
+  color: #111;
+  border:none; padding:10px 14px; border-radius:10px; cursor:pointer;
+  font-weight:700; box-shadow: 0 8px 20px rgba(255,105,105,0.12);
+}
+.crisis:hover{ transform: translateY(-3px); }
+
+/* Main area */
+.main{ display:flex; gap:20px; padding:26px; align-items:stretch; }
+
+/* Sidebar */
+.sidebar{
+  width:240px; min-width:200px;
+  background: var(--glass);
+  padding:18px; border-radius:12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+}
+.sidebar h3{ font-size:16px; margin-bottom:12px; color:var(--muted); }
+.tool{
+  display:flex; align-items:center; gap:10px;
+  width:100%; margin-bottom:12px; padding:10px 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+  border-radius:10px; border:1px solid rgba(255,255,255,0.03);
+  color:#fff; cursor:pointer; font-weight:600;
+}
+.tool i{ width:26px; text-align:center; }
+.tool:hover{ transform: translateY(-4px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
+
+/* Chat area */
+.chat-section{ flex:1; display:flex; flex-direction:column; gap:12px; }
+.chat{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+  padding:18px; border-radius:12px; min-height:420px; overflow:auto;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.25);
+}
+
+/* message bubbles */
+.bot-msg, .user-msg{
+  display:flex; gap:12px; margin-bottom:14px; align-items:flex-start;
+}
+.bot-msg .avatar, .user-msg .avatar{
+  width:44px; height:44px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-weight:700;
+}
+.bot-msg .avatar{ background: linear-gradient(135deg,var(--accent1),var(--accent2)); color:#fff; box-shadow:0 8px 20px rgba(0,0,0,0.4); }
+.user-msg{ justify-content:flex-end; flex-direction:row-reverse; }
+.user-msg .avatar{ background:rgba(255,255,255,0.06); color:#fff; border:1px solid rgba(255,255,255,0.04); }
+
+.bubble{
+  max-width:78%;
+  padding:12px 14px;
+  border-radius:14px; line-height:1.35;
+  background: rgba(0,0,0,0.35); color:#fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+.user-msg .bubble{
+  background: linear-gradient(135deg,#fff6,#ffffff88);
+  color:#111;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+
+/* input row */
+.msg-form{ display:flex; gap:10px; margin-top:6px; }
+.msg-form input{
+  flex:1; padding:12px 14px; border-radius:12px; border:0; outline:none;
+  background: rgba(255,255,255,0.06); color:#fff;
+}
+.msg-form button{
+  width:54px; border-radius:12px; border:0; cursor:pointer;
+  background: linear-gradient(135deg,var(--accent1),var(--accent2)); color:#fff; font-size:18px;
+}
+
+/* overlays */
+.overlay{
+  position: fixed; inset:0; display:flex; align-items:center; justify-content:center;
+  background: rgba(2,6,23,0.6); z-index:60;
+}
+.hidden{ display:none; }
+
+/* breath card */
+.breath-card{
+  width:360px; max-width:92%; padding:22px; border-radius:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.06));
+  text-align:center; box-shadow: 0 12px 40px rgba(2,6,23,0.7);
+}
+.breath-circle{
+  width:150px; height:150px; margin:14px auto;
+  border-radius:50%; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  display:flex; align-items:center; justify-content:center;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
+}
+.breath-circle::after{
+  content:""; display:block; width:60px; height:60px; border-radius:50%;
+  background: linear-gradient(135deg,#84fab0,#8fd3f4); transition: all 1s ease;
+}
+.breath-card .controls{ display:flex; gap:10px; justify-content:center; margin-top:12px; }
+.breath-card button{
+  padding:8px 12px; border-radius:10px; border:0; cursor:pointer;
+  background: linear-gradient(135deg,#ff9a9e,#fad0c4); color:#111;
+}
+
+/* crisis card */
+.crisis-card{
+  width:420px; max-width:94%; padding:22px; border-radius:12px; text-align:center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.08));
+  box-shadow: 0 14px 40px rgba(0,0,0,0.7);
+}
+.crisis-card h2{ margin-bottom:10px; color:#ffd1d1; text-shadow:0 0 8px rgba(255,200,200,0.2); }
+.crisis-actions{ display:flex; gap:10px; justify-content:center; margin-top:12px; }
+.crisis-actions button{
+  padding:10px 12px; border-radius:10px; border:0; cursor:pointer;
+}
+.crisis-actions #callEmergency{ background:#ff6b6b; color:#111; }
+.crisis-actions #closeCrisis{ background: rgba(255,255,255,0.06); color:#fff; }
+
+/* footer */
+.app-footer{ padding:14px 18px; text-align:center; font-size:13px; color: rgba(255,255,255,0.8); background: rgba(0,0,0,0.04); border-top:1px solid rgba(255,255,255,0.02); }
+@media (max-width:900px){
+  .main{ flex-direction:column; }
+  .sidebar{ width:100%; order:2; }
+}

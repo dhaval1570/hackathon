@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>College Mental Health Check — Quick Quiz</title>
+  <link rel="stylesheet" href="quiz.css">
+</head>
+<body>
+  <div class="container" role="application" aria-label="College mental health quick quiz">
+    <div class="quiz">
+      <div class="logo">
+        <div class="dot">MH</div>
+        <div>
+          <h1>Student Mental Health Check</h1>
+          <p class="lead">A quick screening combining PHQ-9 (depression) and GAD-7 (anxiety). Not a diagnosis — just a helpful snapshot.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="progress-wrap">
+          <div style="width:12%;font-size:13px;color:var(--muted)">Screening</div>
+          <div class="progress" aria-hidden="true"><i></i></div>
+          <div class="qcount">Question <span id="qIndex">1</span> / <span id="qTotal">16</span></div>
+        </div>
+
+        <div class="question-area" id="questionArea">
+          <!-- question injected here -->
+        </div>
+
+        <div class="controls">
+          <button id="btnBack" class="btn ghost" aria-label="Previous question">← Previous</button>
+          <div style="display:flex;gap:8px">
+            <button id="btnSkip" class="btn ghost">Skip</button>
+            <button id="btnNext" class="btn primary">Next →</button>
+            <a href="report.html"><button id="btnrpt" class="btn report"> Check Report</button></a>
+          </div>
+        </div>
+
+        <!-- Restart button (hidden until results) -->
+        <div class="controls" id="restartContainer" style="display:none;margin-top:10px;">
+          <button id="btnRestart" class="btn ghost">↺ Restart Quiz</button>
+        </div>
+      </div>
+
+      <footer class="note">
+        <span>Privacy: answers are stored locally in your browser only.</span>
+        <span class="small">Made for college students • Not medical advice</span>
+      </footer>
+    </div>
+
+    <aside class="summary">
+      <div class="card">
+        <div class="stat">
+          <h3>Quick score</h3>
+          <div class="big-score" id="quickScore">—</div>
+        </div>
+
+        <div class="severity" id="severityBox">
+          <strong id="severityLabel">Take the quiz to see results</strong>
+          <div id="severityExplain" class="small" style="margin-top:8px;color:var(--muted)"></div>
+        </div>
+
+        <div class="tips" id="tipsBox">
+          <strong>What to do</strong>
+          <div id="tipsText" class="small">Finish the quiz for personalized recommendations.</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <script src="quiz.js"></script>
+</body>
+</html>
